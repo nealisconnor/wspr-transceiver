@@ -1,0 +1,29 @@
+# KiCad
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*.bak
+*-backups/
+**/*-backups/
+_autosave-*
+*.lck
+hardware/fp-info-cache
+hardware/*.kicad_prl
+hardware/.cache/
+
+# C build artifacts
+software/*.o
+software/wspr_transmit
+software/*.d
+
+# Fabrication outputs — tracked intentionally so reviewers don't need KiCad
+# Uncomment to exclude:
+# hardware/fabrication/
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Editors
+.vscode/
+*.swp
+*~
