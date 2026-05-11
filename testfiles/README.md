@@ -14,7 +14,7 @@ so basically you have to ensure wsprd.c the old file can run and those are all t
 | `wspr_transmit.c` | Drives Si5351A CLK2 with the encoded symbols as 4-FSK tones |
 | `wspr_wav_gen.c` | Generates a test WAV file to verify the encoder + decoder pipeline |
 
-These files use the existing lab infrastructure — the Si5351A on I²C bus 3, the `k9an-wsprd` decoder, and the `si5351_prog` receiver initialiser in the `si5351/` subdirectory.
+These files use the existing lab infrastructure — the Si5351A on I²C bus, the `k9an-wsprd` decoder, and the `si5351_prog` receiver initialiser in the `si5351/` subdirectory.
 
 ## Setup
 
@@ -33,7 +33,7 @@ lab6-implementation/
 │   ├── si5351prog.c     (existing — receiver CLK0/CLK1 init)
 │   ├── Si5351A-RevB-Registers.h
 │   └── Makefile
-└── (other existing lab files: fano.c, jelinek.c, nhash.c, etc.)
+└── (other existing lab files: fano.c, jelinek.c, nhash.c, etc in lab 5 wsprcan.)
 ```
 
 ## Building
@@ -171,5 +171,3 @@ With our configuration (27 MHz crystal, c = 1,000,000, N = 126):
 Even using the maximum c = 1,048,575 (20-bit limit), the step count is still not an integer. This is a fundamental hardware limitation of the Si5351A's fractional-N PLL — you cannot write a fractional value to an integer register.
 
 The ~2.4% spacing error is well within the decoder's tolerance. This was verified by generating a WAV file with 1.5 Hz spacing and successfully decoding it with `k9an-wsprd`.
-
-You can run `test_si5351_resolution.py` to see the full calculation and verify this.
