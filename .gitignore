@@ -23,6 +23,19 @@ software/*.d
 .DS_Store
 .AppleDouble
 
+# LaTeX build artifacts
+report/*.aux
+report/*.log
+report/*.out
+report/*.synctex.gz
+report/*.fls
+report/*.fdb_latexmk
+report/*.blg
+report/*.bbl
+
+# Word temp files
+~$*
+
 # Editors
 .vscode/
 *.swp
