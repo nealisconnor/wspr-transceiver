@@ -351,13 +351,7 @@ The SMA output connector (BWSMA-KE-P001) presents a 50~$\Omega$ load.
   \label{fig:tx_amp}
 \end{figure}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.6\columnwidth]{tx_output_rf}
-  \caption{Tx output at 7~MHz ($\approx$6.3~V$_\text{pp}$ into 50~$\Omega$,
-           $\approx$100~mW).}
-  \label{fig:tx_output}
-\end{figure}
+
 
 \subsection{T/R Switching Network}
 
@@ -394,7 +388,7 @@ JLCPCB fabrication (Fig.~\ref{fig:full_schem} and Fig.~\ref{fig:pcb_layout}).
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.85\columnwidth]{schem}
+  \includegraphics[width=0.80\columnwidth]{schem}  % slightly tighter
   \caption{Full KiCad schematic: BS170 Tx amplifier and TS5A23159 T/R switch
            integrated with the existing WSPR-SDR BPF.}
   \label{fig:full_schem}
@@ -402,14 +396,13 @@ JLCPCB fabrication (Fig.~\ref{fig:full_schem} and Fig.~\ref{fig:pcb_layout}).
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.70\columnwidth]{pcb_schem}
+  \includegraphics[width=0.65\columnwidth]{pcb_schem}  % slightly tighter
   \caption{KiCad PCB layout. New Tx and switch components placed and routed
            within the original board area.}
   \label{fig:pcb_layout}
 \end{figure}
 
 % -------------------------------------------------------
-\vfill\newpage
 \section{Conclusion}
 
 Part~A demonstrated a complete WSPR transmit--receive loopback: CLK2 was
@@ -456,6 +449,8 @@ pp.~1--6, Nov./Dec. 2010.
 
 \needspace{12\baselineskip}
 \section{wspr\_encode.c --- FEC and Symbol Generation}
+
+
 \label{app:encode}
 \begin{lstlisting}[style=cstyle,language=C,
   basicstyle=\ttfamily\tiny,
