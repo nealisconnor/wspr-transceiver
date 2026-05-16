@@ -447,48 +447,157 @@ pp.~1--6, Nov./Dec. 2010.
 
 \appendix
 
-\needspace{12\baselineskip}
-\section{wspr\_encode.c --- FEC and Symbol Generation}
-
-
-\label{app:encode}
+\needspace{8\baselineskip}
+\section{wspr\_encode.c --- Callsign Packing}
+\label{app:encode-callsign}
 \begin{lstlisting}[style=cstyle,language=C,
   basicstyle=\ttfamily\tiny,
   breaklines=true, breakatwhitespace=true,
   columns=fullflexible, keepspaces=true,
   frame=single, framesep=2pt,
   xleftmargin=2pt, xrightmargin=2pt]
-/* Stage 4: convolutional FEC, rate 1/2, K=32 */
-#define POLY1 0xF2D05351
-#define POLY2 0xE4613C47
-for (i = 0; i < 81; i++) {
-    reg = (reg << 1) | input_bit[i];
-    coded[2*i]   = parity32(reg & POLY1);
-    coded[2*i+1] = parity32(reg & POLY2);
+/* Convert the callsign into the packed WSPR callsign field. */
+uint32_t n;
+n  = char_index(call[0]);
+n  = n * 36 + char_index(call[1]);
+n  = n * 10 + char_index(call[2]);
+n  = n * 27 + (char_index(call[3]) - 10);
+n  = n * 27 + (char_index(call[4]) - 10);
+n  = n * 27 + (char_index(call[5]) - 10);
+return n;
+\end{lstlisting}
+\noindent\textit{Excerpt from \texttt{wspr\_encode.c L57--L92}: callsign packing into the WSPR message field.}
+
+
+\needspace{7\baselineskip}
+\section{wspr\_encode.c --- Locator and Power Packing}
+\label{app:encode-locator}
+\begin{lstlisting}[style=cstyle,language=C,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true, breakatwhitespace=true,
+  columns=fullflexible, keepspaces=true,
+  frame=single, framesep=2pt,
+  xleftmargin=2pt, xrightmargin=2pt]
+/* Pack Maidenhead locator and transmit power. */
+uint32_t m;
+m = (179 - 10 * (l[0] - 'A') - (l[2] - '0')) * 180;
+m += 10 * (l[1] - 'A') + (l[3] - '0');
+m = m * 128 + power + 64;
+return m;
+\end{lstlisting}
+\noindent\textit{Excerpt from \texttt{wspr\_encode.c L98--L109}: Maidenhead locator and transmit power packing.}
+
+
+\needspace{8\baselineskip}
+\section{wspr\_encode.c --- Convolutional FEC}
+\label{app:encode-fec}
+\begin{lstlisting}[style=cstyle,language=C,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true, breakatwhitespace=true,
+  columns=fullflexible, keepspaces=true,
+  frame=single, framesep=2pt,
+  xleftmargin=2pt, xrightmargin=2pt]
+/* Generate two parity bits for each input bit. */
+for (int i = 0; i < 81; i++) {
+    reg = ((reg << 1) | bits[i]) & 0xFFFFFFFFUL;
+    coded[out++] = parity32(reg & POLY1);
+    coded[out++] = parity32(reg & POLY2);
 }
-/* Stage 5: interleave + sync merge */
-for (i = 0; i < 162; i++)
-    symbol[i] = SYNC_VECTOR[i] + 2*interleaved[i];
 \end{lstlisting}
-\noindent\texttt{wspr\_encode.c} --- \texttt{PART\_A/CODE.zip}
+\noindent\textit{Excerpt from \texttt{wspr\_encode.c L129--L146}: convolutional FEC generation.}
 
-\needspace{10\baselineskip}
-\section{wspr\_transmit.c --- PLL\_B Register Write}
-\label{app:transmit}
+
+\needspace{9\baselineskip}
+\section{wspr\_encode.c --- Symbol Generation}
+\label{app:encode-symbols}
 \begin{lstlisting}[style=cstyle,language=C,
   basicstyle=\ttfamily\tiny,
   breaklines=true, breakatwhitespace=true,
   columns=fullflexible, keepspaces=true,
   frame=single, framesep=2pt,
   xleftmargin=2pt, xrightmargin=2pt]
-/* AN619 decomposition; c = 1,000,000 */
-a  = (int)floor(M);
-b  = (int)round((M - a) * c);
-P1 = 128*a + (int)floor(128.0*b/c) - 512;
-P2 = 128*b - c*(int)floor(128.0*b/c);
-P3 = c;
-/* Write P1,P2,P3 to regs 0x22-0x29 via I2C */
+/* Full encoder flow: fields -> FEC -> interleave -> symbols. */
+uint32_t n = encode_callsign(callsign);
+uint32_t m = encode_locator_power(grid, power);
+
+pack_50_bit(n, m, bits);
+conv_encode(bits, coded);
+interleave(coded, interleaved);
+
+for (int i = 0; i < WSPR_SYMBOLS; i++)
+    symbols[i] = SYNC_VECTOR[i] + 2 * interleaved[i];
 \end{lstlisting}
-\noindent\texttt{wspr\_transmit.c} --- \texttt{PART\_A/CODE.zip}
+\noindent\textit{Excerpt from \texttt{wspr\_encode.c L179--L203}: full encoder flow producing 162 WSPR symbols.}
+
+
+\needspace{9\baselineskip}
+\section{wspr\_transmit.c --- PLL\_B Register Calculation}
+\label{app:transmit-pllb}
+\begin{lstlisting}[style=cstyle,language=C,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true, breakatwhitespace=true,
+  columns=fullflexible, keepspaces=true,
+  frame=single, framesep=2pt,
+  xleftmargin=2pt, xrightmargin=2pt]
+/* Calculate Si5351 PLL_B multisynth register values. */
+f_vco = freq_hz * MS2_DIVIDER;
+m_pllb = f_vco / XTAL_FREQ;
+a = (unsigned long)m_pllb;
+b = (unsigned long)round((m_pllb - (double)a) * c);
+
+p1 = 128 * a + (128 * b / c) - 512;
+p2 = 128 * b - c * (128 * b / c);
+p3 = c;
+
+tp->p1 = p1;
+tp->p2 = p2;
+tp->p3 = p3;
+\end{lstlisting}
+\noindent\textit{Excerpt from \texttt{wspr\_transmit.c L185--L221}: Si5351 PLL\_B register calculation for WSPR tone frequencies.}
+
+
+\needspace{8\baselineskip}
+\section{wspr\_transmit.c --- WSPR Slot Timing}
+\label{app:transmit-timing}
+\begin{lstlisting}[style=cstyle,language=C,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true, breakatwhitespace=true,
+  columns=fullflexible, keepspaces=true,
+  frame=single, framesep=2pt,
+  xleftmargin=2pt, xrightmargin=2pt]
+/* Wait until the next even UTC minute WSPR slot. */
+for (;;) {
+    now = time(NULL);
+    utc = gmtime(&now);
+
+    if ((utc->tm_min % 2 == 0) && (utc->tm_sec <= 1))
+        return;
+
+    sec_to_wait = (utc->tm_min % 2 == 0)
+                  ? 120 - utc->tm_sec
+                  : 60 - utc->tm_sec;
+    nanosleep(&ts, NULL);
+}
+\end{lstlisting}
+\noindent\textit{Excerpt from \texttt{wspr\_transmit.c L307--L347}: waiting for the even UTC minute WSPR transmit slot.}
+
+
+\needspace{8\baselineskip}
+\section{wspr\_transmit.c --- Symbol Transmission}
+\label{app:transmit-symbols}
+\begin{lstlisting}[style=cstyle,language=C,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true, breakatwhitespace=true,
+  columns=fullflexible, keepspaces=true,
+  frame=single, framesep=2pt,
+  xleftmargin=2pt, xrightmargin=2pt]
+/* Step CLK2 through each encoded WSPR symbol. */
+for (int i = 0; i < WSPR_SYMBOL_COUNT; i++) {
+    int tone = symbols[i];
+    si5351_set_pllb(&tones[tone]);
+    symbol_delay();
+}
+\end{lstlisting}
+\noindent\textit{Excerpt from \texttt{wspr\_transmit.c L486--L511}: stepping CLK2 through the 162 WSPR symbols using PLL\_B tone updates.}
 
 \end{document}
