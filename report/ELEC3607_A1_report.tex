@@ -85,7 +85,7 @@ $\approx$7.040~MHz with an equivalent output power of $\approx$0~dBm into
 $-100$ to $-70$~dBm range; direct connection would overdrive the mixer and amplifier
 by 70--100~dB. Two SMA barrel attenuators (ATT1~=~20~dB, ATT2~=~20~dB) were
 connected in series between the CLK2 test point~(TP6) and the BPFIN SMA connector,
-as shown in Fig.~\ref{fig:loopback_schem} and Fig.~\ref{fig:pcb}. Total
+as shown in Fig.~\ref{fig:loopback_schem} and Fig.~\ref{fig:pcb} (Appendix). Total
 attenuation is 40~dB:
 %
 \begin{equation}
@@ -108,17 +108,8 @@ linear range while providing a high-SNR loopback for verification.
   \label{fig:loopback_schem}
 \end{figure}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\columnwidth]{IMG_0656}
-  \caption{Modified hardware. The AUP-ZU3 FPGA board~(top) connects to the
-           WSPR-SDR daughter board~(bottom right) via ribbon cable. The 40~dB
-           SMA attenuator chain~(left) bridges CLK2 TP6 to the BPFIN SMA
-           connector.}
-  \label{fig:pcb}
-\end{figure}
+% fig:pcb moved to appendix
 
-\columnbreak
 \subsection{WSPR Encoder --- \texttt{wspr\_encode.c}}
 
 The WSPR protocol encodes a callsign, 4-character Maidenhead locator, and
@@ -293,27 +284,10 @@ capture device after a few seconds, causing the decoder to record silence.
 \subsection{Results}
 
 Two consecutive decode runs are presented. In both, \texttt{VK2AAR QF56 3} was
-recovered correctly.
+recovered correctly. Terminal screenshots are shown in Fig.~\ref{fig:decode1} and
+Fig.~\ref{fig:decode2} (Appendix).
 
-% \begin{figure}[t]
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\columnwidth]{SplitTerminal}
-  \caption{First loopback decode (06:16:00~UTC). Left: transmitter output showing
-           162-symbol schedule and ``Transmission complete.'' Right: decoder
-           confirming SNR\,=\,38~dB, offset~$-1.7$~ppm, audio
-           frequency~1502~Hz.}
-  \label{fig:decode1}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\columnwidth]{Split2}
-  \caption{Second loopback decode (06:24:00~UTC). Primary decode: SNR\,=\,38~dB,
-           $-1.8$~ppm. Spurious decode (\texttt{JV05QV~60}) is a statistical
-           artefact of the convolutional search; normal behaviour at high SNR.}
-  \label{fig:decode2}
-\end{figure}
+% fig:decode1, fig:decode2 moved to appendix
 
 \begin{table}[H]
   \centering
@@ -501,13 +475,7 @@ in the design.
 Finally, the title block in the schematic was updated to reflect the fact that this is 
 now a transceiver design.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\columnwidth]{pcb_schem}
-  \caption{Full KiCad schematic: BS170 Tx amplifier and TS5A23159 T/R switching
-           network integrated with the existing WSPR-SDR BPF and LNA.}
-  \label{fig:pcb_schem}
-\end{figure}
+The completed schematic is shown in Fig.~\ref{fig:pcb_schem} (Appendix).
 
 \subsection{PCB Layout}
 The KiCad PCB Editor was opened and the existing layout, \texttt{bbb.kicad\_pcb} was
@@ -526,13 +494,7 @@ are met. Dynamic, run-time DRC was also enabled during the routing stage.
 
 Once DRC was clean, gerber and drill files were exported.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\columnwidth]{pcb_layout}
-  \caption{Full KiCad PCB layout. New components (Tx amplifier, Analog switch)
-           placed and routed using the existing WSPR-SDR board layout.}
-  \label{fig:pcb_layout}
-\end{figure}
+The completed PCB layout is shown in Fig.~\ref{fig:pcb_layout} (Appendix).
 
 % -------------------------------------------------------
 \section{Conclusion}
@@ -583,6 +545,56 @@ Available: \url{https://au.element14.com/}
 \newpage
 \appendix
 
+\section{Hardware and Decode Screenshots}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth]{IMG_0656}
+  \caption{Modified hardware. The AUP-ZU3 FPGA board~(top) connects to the
+           WSPR-SDR daughter board~(bottom right) via ribbon cable. The 40~dB
+           SMA attenuator chain~(left) bridges CLK2 TP6 to the BPFIN SMA
+           connector.}
+  \label{fig:pcb}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth]{SplitTerminal}
+  \caption{First loopback decode (06:16:00~UTC). Left: transmitter output showing
+           162-symbol schedule and ``Transmission complete.'' Right: decoder
+           confirming SNR\,=\,38~dB, offset~$-1.7$~ppm, audio
+           frequency~1502~Hz.}
+  \label{fig:decode1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth]{Split2}
+  \caption{Second loopback decode (06:24:00~UTC). Primary decode: SNR\,=\,38~dB,
+           $-1.8$~ppm. Spurious decode (\texttt{JV05QV~60}) is a statistical
+           artefact of the convolutional search; normal behaviour at high SNR.}
+  \label{fig:decode2}
+\end{figure}
+
+\section{KiCad Schematic and PCB Layout}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth]{pcb_schem}
+  \caption{Full KiCad schematic: BS170 Tx amplifier and TS5A23159 T/R switching
+           network integrated with the existing WSPR-SDR BPF and LNA.}
+  \label{fig:pcb_schem}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth]{pcb_layout}
+  \caption{Full KiCad PCB layout. New components (Tx amplifier, Analog switch)
+           placed and routed using the existing WSPR-SDR board layout.}
+  \label{fig:pcb_layout}
+\end{figure}
+
+% -------------------------------------------------------
 \section{wspr\_encode.c --- FEC and Symbol Generation}
 \label{app:encode}
 

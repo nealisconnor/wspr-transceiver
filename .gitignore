@@ -44,3 +44,4 @@ report/*.bbl
 .vscode/
 *.swp
 *~
+*.zip
