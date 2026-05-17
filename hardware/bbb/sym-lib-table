@@ -1,0 +1,11 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "pwr_BeagleBone") (type "Legacy") (uri "${KIPRJMOD}/pwr_BeagleBone.lib") (options "") (descr "") (disabled) (hidden))
+	(lib (name "elec3607sdr-rescue") (type "Legacy") (uri "/Users/phwl/Dropbox (Sydney Uni)/doc/teaching/elec3607/kicad/elec3607sdr/elec3607sdr-rescue.lib") (options "") (descr "") (disabled) (hidden))
+	(lib (name "phwllib") (type "Legacy") (uri "/Users/phwl/projects/kicad/phwl-symbols/phwllib.lib") (options "") (descr "") (disabled) (hidden))
+	(lib (name "bbb-rescue") (type "Legacy") (uri "${KIPRJMOD}/bbb-rescue.lib") (options "") (descr ""))
+	(lib (name "BS170") (type "KiCad") (uri "D:/Rianne/UNI/SEM 5/ELEC3607_Embedded_Sys/Kicad_libs/ul_BS170/KiCADv6/2026-05-10_11-17-42.kicad_sym") (options "") (descr ""))
+	(lib (name "L1uH") (type "KiCad") (uri "D:/Rianne/UNI/SEM 5/ELEC3607_Embedded_Sys/Kicad_libs/ul_MLF1608A1R0MTD25/KiCADv6/2026-05-10_11-23-54.kicad_sym") (options "") (descr ""))
+	(lib (name "L10uH") (type "KiCad") (uri "D:/Rianne/UNI/SEM 5/ELEC3607_Embedded_Sys/Kicad_libs/ul_MLZ2012M100WT000/KiCADv6/2026-05-10_11-22-00.kicad_sym") (options "") (descr ""))
+	(lib (name "Analog switchx2") (type "KiCad") (uri "D:/Rianne/UNI/SEM 5/ELEC3607_Embedded_Sys/Kicad_libs/ul_TS5A23159DGSR/KiCADv6/2026-05-10_11-19-18.kicad_sym") (options "") (descr ""))
+)
