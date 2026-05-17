@@ -19,12 +19,15 @@ wspr-transceiver/
 │   ├── wspr_encode.c/h
 │   └── Makefile
 ├── hardware/               # Part B — KiCad project
-│   ├── wspr-transceiver.kicad_pro
-│   ├── wspr-transceiver.kicad_sch
-│   ├── wspr-transceiver.kicad_pcb
-│   ├── sym-lib-table
-│   ├── fp-lib-table
-│   └── fabrication/        # Gerbers, drill files, BOM
+│   ├── bbb/
+│     ├── bbb.kicad_pro     # Kicad project
+│     ├── bbb.kicad_sch     # schematic
+│     ├── bbb.kicad_pcb     # pcb layout
+│     ├── Kicad_libs        # contains symbols and footprints of new components
+│     ├── *.gbr             # Gerbers
+│     ├── *.drl             # drill files
+│     ├── *.net             # netlist
+│     └── *.csv             # BOM
 ├── report/                 # IEEE-format PDF report
 └── README.md
 ```
@@ -41,7 +44,7 @@ Targets `/dev/i2c-3`, address `0x60` (Si5351). Fit loopback jumper before runnin
 
 ## Part B — KiCad
 
-Open `hardware/wspr-transceiver.kicad_pro` in KiCad 8.x. Upstream reference: [phwl/elec3607-lab pcb_2026](https://github.com/phwl/elec3607-lab/tree/main/pcb_2026).
+Open `hardware/bbb/bbb.kicad_pro` in KiCad 8.x. Upstream reference: [phwl/elec3607-lab pcb_2026](https://github.com/phwl/elec3607-lab/tree/main/pcb_2026).
 
 ## Hardware Target
 
