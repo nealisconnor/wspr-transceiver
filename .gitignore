@@ -36,6 +36,10 @@ report/*.bbl
 # Word temp files
 ~$*
 
+# Claude Code internal directories
+.claude/
+.history
+
 # Editors
 .vscode/
 *.swp
