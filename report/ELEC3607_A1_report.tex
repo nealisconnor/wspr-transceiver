@@ -13,6 +13,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{needspace}
+
 
 % Image search paths: Part A pictures and the A1 root (Part B images)
 \graphicspath{{./}}
@@ -38,7 +40,7 @@
 \title{WSPR-SDR Modifications: RF Loopback Transmitter and\\Shared-BPF Transceiver Design}
 
 \author{
-  \IEEEauthorblockN{Connor Nealis \ Rianne Joseph \ Muhammad Abdullah \ Sam (Sorry cannot remember last name and its not on whatsapp}
+  \IEEEauthorblockN{Connor Nealis \ Rianne Joseph \ Muhammad Abdullah \ Tayat Angkasuwapala}
   \IEEEauthorblockA{
     School of Electrical and Information Engineering,
     University of Sydney, Sydney, Australia
@@ -46,26 +48,7 @@
 }
 
 \maketitle
-
-% -------------------------------------------------------
-\begin{abstract}
-This paper describes two modifications to a WSPR software-defined radio (SDR)
-receiver built around the AUP-ZU3 FPGA platform. The first modification~(Part~A)
-implements a 4-FSK WSPR transmitter using the Si5351A CLK2 output attenuated by
-40~dB and injected into the receiver front end, demonstrating a complete
-transmit--receive loopback at 7.040~MHz. The WSPR message \texttt{VK2AAR QF56 3~dBm}
-was encoded as 162 4-FSK symbols and decoded at SNR\,=\,38~dB, confirming correct
-encoder, frequency synthesis, and timing synchronisation. The second
-modification~(Part~B) designs a hardware transceiver path: a BS170 MOSFET
-common-source amplifier targeting 100~mW into 50~$\Omega$ at 7~MHz, and a
-TI~TS5A23159 dual-channel analog switch that re-uses the existing 7~MHz bandpass
-filter for both receive and transmit paths under GPIO control.
-\end{abstract}
-
-\begin{IEEEkeywords}
-WSPR, SDR, Si5351A, 4-FSK, convolutional encoding, RF loopback, BS170,
-common-source amplifier, T/R switch, bandpass filter
-\end{IEEEkeywords}
+\raggedbottom
 
 % -------------------------------------------------------
 \section{Introduction}
@@ -135,6 +118,7 @@ linear range while providing a high-SNR loopback for verification.
   \label{fig:pcb}
 \end{figure}
 
+\columnbreak
 \subsection{WSPR Encoder --- \texttt{wspr\_encode.c}}
 
 The WSPR protocol encodes a callsign, 4-character Maidenhead locator, and
@@ -157,15 +141,13 @@ where $c_0\!\in\![0,36]$ (alphanumeric~+~space), $c_1\!\in\![0,35]$,
 $c_2\!\in\![0,9]$ (digit only), and $c_{3\text{--}5}\!\in\![10,36]$ (alpha only).
 \textit{(wspr\_encode.c L57--L92)}
 
-\textbf{Stage~2 --- Grid and power packing (22~bits).}
-%
 \begin{align}
-  M &= \bigl(179 - 10(l_0{-}\texttt{'A'}) - (l_2{-}\texttt{'0'})\bigr)\cdot 180
-       + 10(l_1{-}\texttt{'A'}) + (l_3{-}\texttt{'0'}) \notag \\
-    & \leftarrow M \cdot 128 + P_\text{dBm} + 64
+  M &= \bigl(179 - 10(l_0{-}\texttt{'A'}) 
+           - (l_2{-}\texttt{'0'})\bigr)\cdot 180 \notag \\
+    &\quad + 10(l_1{-}\texttt{'A'}) + (l_3{-}\texttt{'0'}) \notag \\
+    &\leftarrow M \cdot 128 + P_\text{dBm} + 64
   \label{eq:grid}
 \end{align}
-%
 \textit{(wspr\_encode.c L98--L109)}
 
 \textbf{Stage~3 --- 50-bit packing.} $N$~(28~bits) and $M$~(22~bits) are
@@ -364,12 +346,15 @@ paths under GPIO control.
 
 \subsection{Transmit Amplifier}
 
-First, we calculate the $V_{\text{peak}}$ that is required to drive $100\text{ mW}$ into a $50\,\Omega$ impedance:
-
-$$P = \frac{(V_{\text{RMS}})^2}{R}$$
-
-$$V_{\text{RMS}} = \sqrt{0.1 \times 50} = 2.236\text{ V}$$
-Hence, $V_{\text{peak}} = 3.16\text{ V}$ and $V_{\text{pp}} = 6.32\text{ V}$.
+First, we calculate the $V_\text{peak}$ required to drive 100~mW into 50~$\Omega$.
+From $P = V_\text{RMS}^2 / R$:
+%
+\begin{equation}
+  V_\text{RMS} = \sqrt{P \cdot R} = \sqrt{0.1 \times 50} = 2.236\,\text{V}
+  \label{eq:vrms}
+\end{equation}
+%
+Hence $V_\text{peak} = 3.16\,\text{V}$ and $V_\text{pp} = 6.32\,\text{V}$.
 
 The signal to be amplified is the 7MHz CLK2 signal from the clock generator. 
 This signal swings between 0V and 3.3V as shown in Fig. \ref{fig:clk2_input}.
@@ -409,41 +394,38 @@ The resonant frequency is given by:
 
 where $f_o = 7\text{ MHz}$.
 
-We first select C33. Standard values of temperature compensated ceramic capacitors uses in RF 
-applications are 220pF, 330pF, 470pF and 680pF. We choose 470pF.
+We first select C33. Standard values of temperature-compensated ceramic capacitors
+used in RF applications are 220~pF, 330~pF, 470~pF, and 680~pF. We choose 470~pF.
 
-Then we solve for L5 using the formula:
-
+Solving for L5:
+%
 \begin{equation}
-    L = \frac{1}{(2\pi f_o)^2 \cdot C}
+  L = \frac{1}{(2\pi f_0)^2 \cdot C}
+  \label{eq:l5}
 \end{equation}
+%
+Substituting $f_0 = 7\,\text{MHz}$ and $C = 470\,\text{pF}$ gives $L = 1.09\,\mu\text{H}$.
+The nearest standard value is $1\,\mu\text{H}$; hence L5~=~$1\,\mu\text{H}$.
 
-Substituting fo and C values, we get L = 1.09uH. A standard value is 1uH. 
-Hence, we choose L5 as 1uH.\medskip
-
-L4 provides DC current to the MOSFET drain and acts as a choke blocking RF from 
-entering the power supply.\medskip
-
-At 7MHz, we need to ensure that $X_L \gg 50\,\Omega$.
-
-where \begin{equation}
-    X_L = 2\pi f_o L
+L4 provides DC current to the MOSFET drain and blocks RF from entering the power supply.
+At 7~MHz we require $X_L \gg 50\,\Omega$, where:
+%
+\begin{equation}
+  X_L = 2\pi f_0 L
+  \label{eq:xl}
 \end{equation}
-Choosing a standard value of L = 10uH, we get $X_L= 440\,\Omega$ which is much higher than $50\,\Omega$. 
-Therefore, with L = 10uH, RF sees the supply path as nearly an open-circuit.\medskip
+%
+Choosing the standard value $L = 10\,\mu\text{H}$ gives $X_L = 440\,\Omega \gg 50\,\Omega$,
+so the supply path appears as a near open-circuit to RF.
 
-The gate series resistor, R22 is used for reducing any instantaneous gate charging current 
-and ringing. Its exact value is not critical. Typically used gate series resistor values
-range from $10\,\Omega$ to $100\,\Omega$. A standard resistor, $47\,\Omega$ is chosen from 
-this range.\medskip
+The gate series resistor R22 limits instantaneous gate charging current and suppresses
+ringing. Its exact value is not critical; typical values range from $10\,\Omega$ to
+$100\,\Omega$. The standard value $47\,\Omega$ is chosen.
 
-The gate pull down resistor, R23 ensures that the MOSFET remains off during power-up and 
-should discharge the gate capacitance quickly. The input gate capacitance of the BS170 MOSFET
-is around 25pF. We should choose an R value that discharges this capacitance within a few 
-microseconds.\medskip
-
-With R23 chosen as $100K\,\Omega$ and C = 25pF, from $\tau = RC$, we get a time constant of around 2.5uS. 
-This is sufficiently fast and hence we use the $100K\,\Omega$ resistor for R23.
+The gate pull-down resistor R23 ensures the MOSFET stays off at power-up and discharges
+the gate capacitance. With the BS170 input capacitance $C_\text{iss} \approx 25\,\text{pF}$,
+choosing $R23 = 100\,\text{k}\Omega$ gives a time constant
+$\tau = RC = 2.5\,\mu\text{s}$, which is sufficiently fast.
 
 \begin{figure}[H]
   \centering
@@ -528,23 +510,23 @@ now a transceiver design.
 \end{figure}
 
 \subsection{PCB Layout}
-The Kicad PCB Editor was opened and the existing layout, \texttt{bbb.kicad\_pcb} was
- updated from the new schematic. This placed the new components outside the boundary
- of the PCB. By observing the flylines between the components, multiple placement 
- iterations were conducted to arrive at  the final placement.
+The KiCad PCB Editor was opened and the existing layout, \texttt{bbb.kicad\_pcb} was
+updated from the new schematic. This placed the new components outside the boundary
+of the PCB. By observing the flylines between the components, multiple placement
+iterations were conducted to arrive at the final placement.
 
- Placement considerations included minimisation of net length by ensuring best proximity
- between components. A combination of auto-routing of individual nets and manual 
- routing was done utilizing the 2 available routing layers (F.Cu and B.Cu). 
- Since this is an RF design, though at low frequency, attempts were made to reduce
- the number of vias on nets. 
+Placement considerations included minimisation of net length by ensuring best proximity
+between components. A combination of auto-routing of individual nets and manual
+routing was done utilizing the 2 available routing layers (F.Cu and B.Cu).
+Since this is an RF design, though at low frequency, attempts were made to reduce
+the number of vias on nets.
 
-A Design Rule Check (DRC) was run to ensure that all manufacturing related rules 
-are met. Dynamic, run-time DRC was also enabled during the routing stage. 
+A Design Rule Check (DRC) was run to ensure that all manufacturing related rules
+are met. Dynamic, run-time DRC was also enabled during the routing stage.
 
 Once DRC was clean, gerber and drill files were exported.
 
- \begin{figure}[H]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\columnwidth]{pcb_layout}
   \caption{Full KiCad PCB layout. New components (Tx amplifier, Analog switch)
@@ -592,11 +574,13 @@ J.~Ahlstrom, ``An All-Digital Transceiver for HF,'' \textit{QEX},
 pp.~1--6, Nov./Dec. 2010.
 
 \bibitem{e14}
-Element14, `https://au.element14.com/,'' Website
+Element14, ``Component Search and Supply,'' [Online].
+Available: \url{https://au.element14.com/}
 
 \end{thebibliography}
 
 % -------------------------------------------------------
+\newpage
 \appendix
 
 \section{wspr\_encode.c --- FEC and Symbol Generation}
@@ -618,7 +602,7 @@ for (i = 0; i < 162; i++)
     symbol[i] = SYNC_VECTOR[i] + 2 * interleaved[i];
 \end{lstlisting}
 
-Full source: \texttt{PART\_A/CODE.zip} --- \texttt{wspr\_encode.c}
+Full source: \texttt{CODE.zip} --- \texttt{wspr\_encode.c}
 
 \section{wspr\_transmit.c --- PLL\_B Register Write}
 \label{app:transmit}
