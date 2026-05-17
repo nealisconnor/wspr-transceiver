@@ -20,14 +20,14 @@ wspr-transceiver/
 │   └── Makefile
 ├── hardware/               # Part B — KiCad project
 │   ├── bbb/
-│     ├── bbb.kicad_pro     # Kicad project
-│     ├── bbb.kicad_sch     # schematic
-│     ├── bbb.kicad_pcb     # pcb layout
-│     ├── Kicad_libs        # contains symbols and footprints of new components
-│     ├── *.gbr             # Gerbers
-│     ├── *.drl             # drill files
-│     ├── *.net             # netlist
-│     └── *.csv             # BOM
+│       ├── bbb.kicad_pro     # Kicad project
+│       ├── bbb.kicad_sch     # schematic
+│       ├── bbb.kicad_pcb     # pcb layout
+│       ├── Kicad_libs        # contains symbols and footprints of new components
+│       ├── *.gbr             # Gerbers
+│       ├── *.drl             # drill files
+│       ├── *.net             # netlist
+│       └── *.csv             # BOM
 ├── report/                 # IEEE-format PDF report
 └── README.md
 ```
