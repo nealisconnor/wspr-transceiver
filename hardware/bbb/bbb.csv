@@ -1,0 +1,43 @@
+Reference,Value,Footprint
+"C1,C3,C4,C5,C6,C7,C8,C9,C10",0.1uF,Capacitor_SMD:C_0805_2012Metric
+C2,0.01uF,Capacitor_SMD:C_0805_2012Metric
+"C11,C12",3300pF,Capacitor_SMD:C_0805_2012Metric
+"C13,C34",100nF,Capacitor_SMD:C_0805_2012Metric
+C14,10uF,Capacitor_SMD:C_0805_2012Metric
+"C20,C25,C29",33pF,Capacitor_SMD:C_0805_2012Metric
+"C21,C26,C30",27pF,Capacitor_SMD:C_0805_2012Metric
+C22,270pF,Capacitor_SMD:C_0805_2012Metric
+"C23,C27,C31",680pF,Capacitor_SMD:C_0805_2012Metric
+"C24,C28,C32",22pF,Capacitor_SMD:C_0805_2012Metric
+C33,470pf,Capacitor_SMD:C_0805_2012Metric
+"CLK0_TP4,CLK1_TP5,Iout_TP6,Qout_TP7,RFIN_TP7,RFOUT_TP8,SCL_TP2,SDA_TP3,XA_TP1",TestPoint_Small,TestPoint:TestPoint_Keystone_5000-5004_Miniature
+D1,LED yellow,Diode_SMD:D_0603_1608Metric
+D2,LED blue,Diode_SMD:D_0603_1608Metric
+GND_TP0,GND BRIDGE,TestPoint:TestPoint_Bridge_Pitch7.62mm_Drill1.3mm
+J1,Conn_02x14_Odd_Even,Connector_PinHeader_2.54mm:PinHeader_2x14_P2.54mm_Vertical
+J2,Conn_02x20_Odd_Even,Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical
+J3,FC68131,AudioJack:FC68131
+J4,Inductor L1,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MPT-0,5-2-2.54_1x02_P2.54mm_Horizontal"
+J5,Inductor L2,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MPT-0,5-2-2.54_1x02_P2.54mm_Horizontal"
+J6,Inductor L3,"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MPT-0,5-2-2.54_1x02_P2.54mm_Horizontal"
+L4,10uH,IND_2012_TDK
+L5,1uH,IND_1608_TDK
+"R1,R3",470,Resistor_SMD:R_0805_2012Metric
+"R2,R22",47,Resistor_SMD:R_0805_2012Metric
+R4,220,Resistor_SMD:R_0805_2012Metric
+"R5,R6",4.7k,Resistor_SMD:R_0805_2012Metric
+R7,100,Resistor_SMD:R_0805_2012Metric
+"R8,R9",10K,Resistor_SMD:R_0805_2012Metric
+R10,62,Resistor_SMD:R_0805_2012Metric
+R11,200,Resistor_SMD:R_0805_2012Metric
+"R20,R21",50,Resistor_SMD:R_0805_2012Metric
+R23,100k,Resistor_SMD:R_0805_2012Metric
+U1,THS4304,Package_TO_SOT_SMD:SOT-23-5
+U2,Si5351A-B-GT,Package_SO:MSOP-10_3x3mm_P0.5mm
+U3,TS3A5017,Package_SO:SOIC-16_3.9x9.9mm_P1.27mm
+U4,TL972,Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm
+U5,LD1117S33TR_SOT223,Package_TO_SOT_SMD:SOT-223-3_TabPin2
+U6,BWSMA-KE-P001,BWSMA-KE-P001:BWSMA-KE-P001
+U7,BS170,TO_SA06_ONS
+U8,TS5A23159DGSR,DGS0010A_N
+Y1,Crystal,Crystal:Crystal_SMD_TXC_7M-4Pin_3.2x2.5mm
